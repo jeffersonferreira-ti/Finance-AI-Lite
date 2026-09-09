@@ -11,12 +11,12 @@ O Finance AI Lite permite registrar, consultar e analisar finanças pessoais usa
 Em vez de preencher formulários para cada movimentação, o usuário conversa com o sistema:
 
 ```text
-Gastei R$ 35 no Uber pelo Pix da conta Santander.
+Gastei R$ 35 no transporte pelo Pix da minha conta principal.
 
-Transferi R$ 200 do Santander para o Nubank.
+Transferi R$ 200 da conta principal para a conta de reserva.
 
-Cadastre Spotify como assinatura de R$ 21,90 por mês,
-cobrada todo dia 10 no cartão Carrefour.
+Cadastre um serviço como assinatura de R$ 21,90 por mês,
+cobrada todo dia 10 no cartão principal.
 
 Como estão minhas finanças este mês?
 
@@ -91,40 +91,18 @@ Mais detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 | Deploy | Apps Script Web App |
 | Análise complementar | NotebookLM |
 
-## Exemplos de uso
+## Interface Web publicada neste repositório
 
-### Registrar uma despesa
+A pasta [`src/`](src/) contém a camada Web do projeto:
 
-```text
-Gastei R$ 42,90 no mercado pelo Pix da conta Santander
-```
+- `WebApp.gs`
+- `Index.html`
+- `Styles.html`
+- `Scripts.html`
 
-### Registrar uma transferência
+O **motor financeiro de produção** não é publicado integralmente neste repositório público porque contém regras e configurações específicas do ambiente pessoal de uso. A arquitetura, os módulos e as decisões de domínio estão documentados em `docs/`.
 
-```text
-Transferi R$ 150 do Santander para o Nubank
-```
-
-Transferências entre contas próprias não são tratadas como receita ou despesa.
-
-### Criar uma assinatura
-
-```text
-Cadastre Spotify como assinatura de R$ 21,90 por mês,
-cobrada todo dia 10 no cartão Carrefour
-```
-
-### Consultar o mês
-
-```text
-Como estão minhas finanças este mês?
-```
-
-### Consultar forecast
-
-```text
-Me dê o forecast dos próximos 3 meses
-```
+Isso mantém o repositório adequado para portfólio sem expor dados, configurações ou regras particulares do ambiente de produção.
 
 ## Regras financeiras importantes
 
@@ -138,16 +116,14 @@ Compras parceladas são distribuídas por competência e vencimento, com tratame
 
 ## Segurança
 
-As credenciais não ficam hardcoded no projeto.
-
-As seguintes propriedades devem ser configuradas em **Apps Script → Project Settings → Script Properties**:
+As credenciais ficam em **Apps Script → Project Settings → Script Properties** e não no código-fonte:
 
 ```text
 GEMINI_API_KEY
 FINANCE_AI_SPREADSHEET_ID
 ```
 
-Nunca publique valores reais dessas propriedades no GitHub.
+Nunca publique valores reais dessas propriedades, IDs privados de planilha ou dados financeiros pessoais.
 
 Consulte [`SECURITY.md`](SECURITY.md).
 
@@ -156,7 +132,6 @@ Consulte [`SECURITY.md`](SECURITY.md).
 ```text
 Finance-AI-Lite/
 ├── src/
-│   ├── Code.gs
 │   ├── WebApp.gs
 │   ├── Index.html
 │   ├── Styles.html
@@ -164,7 +139,6 @@ Finance-AI-Lite/
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   └── FEATURES.md
-├── assets/
 ├── .gitignore
 ├── SECURITY.md
 └── README.md

@@ -1,0 +1,29 @@
+# Local / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.secret
+secrets.*
+credentials.*
+
+# Apps Script / clasp local state
+.clasp.json
+
+# Exports containing personal financial data
+data/
+exports/
+backup/
+backups/
+*.csv
+*.xlsx
+
+# Temporary
+tmp/
+temp/
+*.log

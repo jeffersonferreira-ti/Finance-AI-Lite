@@ -1,0 +1,1060 @@
+<script>
+  (() => {
+    const STORAGE_KEY =
+      'financeAiLiteChatHistoryV1';
+
+    const SESSION_KEY =
+      'financeAiWebSessionId';
+
+    const MAX_HISTORY =
+      60;
+
+    const state = {
+      busy: false,
+      backendReady: false,
+      sessionId: null,
+      history: []
+    };
+
+    const chat =
+      document.getElementById(
+        'chat'
+      );
+
+    const form =
+      document.getElementById(
+        'message-form'
+      );
+
+    const input =
+      document.getElementById(
+        'message-input'
+      );
+
+    const sendButton =
+      document.getElementById(
+        'send-button'
+      );
+
+    const backendStatus =
+      document.getElementById(
+        'backend-status'
+      );
+
+    const clearChatButton =
+      document.getElementById(
+        'clear-chat'
+      );
+
+    const examples =
+      document.getElementById(
+        'examples'
+      );
+
+    function createRequestId() {
+      if (
+        window.crypto &&
+        typeof window.crypto.randomUUID ===
+          'function'
+      ) {
+        return window.crypto.randomUUID();
+      }
+
+      return (
+        'web-' +
+        Date.now() +
+        '-' +
+        Math.random()
+          .toString(36)
+          .slice(2)
+      );
+    }
+
+    function getSessionId() {
+      try {
+        const existing =
+          window.sessionStorage
+            .getItem(
+              SESSION_KEY
+            );
+
+        if (existing) {
+          return existing;
+        }
+      } catch (e) {
+        // Segue com sessao em memoria.
+      }
+
+      const created =
+        createRequestId();
+
+      try {
+        window.sessionStorage
+          .setItem(
+            SESSION_KEY,
+            created
+          );
+      } catch (e) {
+        // A sessao continua valida enquanto a pagina estiver aberta.
+      }
+
+      return created;
+    }
+
+    function loadHistory() {
+      try {
+        const raw =
+          window.localStorage
+            .getItem(
+              STORAGE_KEY
+            );
+
+        if (!raw) {
+          state.history = [];
+          return;
+        }
+
+        const parsed =
+          JSON.parse(
+            raw
+          );
+
+        state.history =
+          Array.isArray(parsed)
+            ? parsed.slice(
+                -MAX_HISTORY
+              )
+            : [];
+      } catch (e) {
+        state.history = [];
+      }
+    }
+
+    function saveHistory() {
+      try {
+        window.localStorage
+          .setItem(
+            STORAGE_KEY,
+            JSON.stringify(
+              state.history.slice(
+                -MAX_HISTORY
+              )
+            )
+          );
+      } catch (e) {
+        // Falha local nao interfere no Finance AI.
+      }
+    }
+
+    function pushHistory(entry) {
+      state.history.push(
+        entry
+      );
+
+      if (
+        state.history.length >
+        MAX_HISTORY
+      ) {
+        state.history =
+          state.history.slice(
+            -MAX_HISTORY
+          );
+      }
+
+      saveHistory();
+    }
+
+    function clearHistory() {
+      state.history = [];
+
+      try {
+        window.localStorage
+          .removeItem(
+            STORAGE_KEY
+          );
+      } catch (e) {
+        // Sem impacto.
+      }
+
+      const rows =
+        chat.querySelectorAll(
+          '.message-row.dynamic-message'
+        );
+
+      rows.forEach(
+        row =>
+          row.remove()
+      );
+
+      examples.hidden =
+        false;
+
+      input.focus();
+    }
+
+    function setBackendStatus(
+      text,
+      mode
+    ) {
+      backendStatus.textContent =
+        text;
+
+      backendStatus.className =
+        'status-badge ' +
+        (
+          mode === 'ready'
+            ? 'status-ready'
+            : mode === 'error'
+              ? 'status-error'
+              : 'status-loading'
+        );
+    }
+
+    function scrollToBottom() {
+      requestAnimationFrame(
+        () => {
+          chat.scrollTop =
+            chat.scrollHeight;
+        }
+      );
+    }
+
+    function buildResponseBody(
+      container,
+      text
+    ) {
+      const raw =
+        String(
+          text || ''
+        );
+
+      const parts =
+        raw.includes(' · ')
+          ? raw
+              .split(' · ')
+              .map(item =>
+                item.trim()
+              )
+              .filter(Boolean)
+          : [];
+
+      if (
+        parts.length >= 3
+      ) {
+        const structured =
+          document.createElement(
+            'div'
+          );
+
+        structured.className =
+          'structured-response';
+
+        parts.forEach(
+          part => {
+            const item =
+              document.createElement(
+                'div'
+              );
+
+            item.className =
+              'structured-item';
+
+            item.textContent =
+              part;
+
+            structured.appendChild(
+              item
+            );
+          }
+        );
+
+        container.appendChild(
+          structured
+        );
+
+        return;
+      }
+
+      container.textContent =
+        raw;
+    }
+
+    function responseTagClass(
+      nature
+    ) {
+      const allowed = [
+        'consulta',
+        'acao',
+        'confirmacao',
+        'atencao'
+      ];
+
+      return allowed.includes(
+        nature
+      )
+        ? 'tag-' + nature
+        : '';
+    }
+
+    function disableConfirmationButtons() {
+      document
+        .querySelectorAll(
+          '.confirmation-button'
+        )
+        .forEach(
+          button => {
+            button.disabled =
+              true;
+          }
+        );
+    }
+
+    function addConfirmationActions(
+      bubble
+    ) {
+      const actions =
+        document.createElement(
+          'div'
+        );
+
+      actions.className =
+        'confirmation-actions';
+
+      const confirm =
+        document.createElement(
+          'button'
+        );
+
+      confirm.type =
+        'button';
+
+      confirm.className =
+        'confirmation-button confirm';
+
+      confirm.textContent =
+        'Confirmar';
+
+      confirm.addEventListener(
+        'click',
+        () => {
+          disableConfirmationButtons();
+          sendMessage(
+            'CONFIRMAR'
+          );
+        }
+      );
+
+      const cancel =
+        document.createElement(
+          'button'
+        );
+
+      cancel.type =
+        'button';
+
+      cancel.className =
+        'confirmation-button cancel';
+
+      cancel.textContent =
+        'Cancelar';
+
+      cancel.addEventListener(
+        'click',
+        () => {
+          disableConfirmationButtons();
+          sendMessage(
+            'CANCELAR'
+          );
+        }
+      );
+
+      actions.appendChild(
+        confirm
+      );
+
+      actions.appendChild(
+        cancel
+      );
+
+      bubble.appendChild(
+        actions
+      );
+    }
+
+    function addMessage(
+      role,
+      text,
+      options = {}
+    ) {
+      const row =
+        document.createElement(
+          'div'
+        );
+
+      row.className =
+        'message-row dynamic-message ' +
+        role +
+        (
+          options.error
+            ? ' error'
+            : ''
+        ) +
+        (
+          options.loading
+            ? ' loading'
+            : ''
+        );
+
+      const bubble =
+        document.createElement(
+          'div'
+        );
+
+      bubble.className =
+        'message-bubble';
+
+      const head =
+        document.createElement(
+          'div'
+        );
+
+      head.className =
+        'message-head';
+
+      const label =
+        document.createElement(
+          'span'
+        );
+
+      label.className =
+        'message-label';
+
+      label.textContent =
+        role === 'user'
+          ? 'Você'
+          : 'Finance AI';
+
+      head.appendChild(
+        label
+      );
+
+      if (
+        role === 'assistant' &&
+        options.tag
+      ) {
+        const tag =
+          document.createElement(
+            'span'
+          );
+
+        tag.className =
+          'response-tag ' +
+          responseTagClass(
+            options.nature
+          );
+
+        tag.textContent =
+          options.tag;
+
+        head.appendChild(
+          tag
+        );
+      }
+
+      const body =
+        document.createElement(
+          'div'
+        );
+
+      body.className =
+        'message-text';
+
+      if (options.loading) {
+        const dots =
+          document.createElement(
+            'span'
+          );
+
+        dots.className =
+          'typing-dots';
+
+        for (
+          let i = 0;
+          i < 3;
+          i++
+        ) {
+          dots.appendChild(
+            document.createElement(
+              'span'
+            )
+          );
+        }
+
+        body.appendChild(
+          dots
+        );
+      } else {
+        buildResponseBody(
+          body,
+          text
+        );
+      }
+
+      bubble.appendChild(
+        head
+      );
+
+      bubble.appendChild(
+        body
+      );
+
+      if (
+        options.confirmation
+      ) {
+        addConfirmationActions(
+          bubble
+        );
+      }
+
+      row.appendChild(
+        bubble
+      );
+
+      chat.appendChild(
+        row
+      );
+
+      scrollToBottom();
+
+      if (
+        !options.loading &&
+        options.persist !== false
+      ) {
+        pushHistory({
+          role:
+            role,
+          text:
+            String(
+              text || ''
+            ),
+          error:
+            !!options.error,
+          nature:
+            options.nature || '',
+          tag:
+            options.tag || '',
+          confirmation:
+            !!options.confirmation,
+          createdAt:
+            Date.now()
+        });
+
+        examples.hidden =
+          true;
+      }
+
+      return row;
+    }
+
+    function restoreHistory() {
+      if (
+        !state.history.length
+      ) {
+        examples.hidden =
+          false;
+        return;
+      }
+
+      examples.hidden =
+        true;
+
+      state.history
+        .forEach(
+          item => {
+            addMessage(
+              item.role,
+              item.text,
+              {
+                error:
+                  item.error,
+                nature:
+                  item.nature,
+                tag:
+                  item.tag,
+                confirmation:
+                  false,
+                persist:
+                  false
+              }
+            );
+          }
+        );
+
+      scrollToBottom();
+    }
+
+    function removeNode(node) {
+      if (
+        node &&
+        node.parentNode
+      ) {
+        node.parentNode.removeChild(
+          node
+        );
+      }
+    }
+
+    function resizeInput() {
+      input.style.height =
+        'auto';
+
+      input.style.height =
+        Math.min(
+          input.scrollHeight,
+          150
+        ) +
+        'px';
+    }
+
+    function setBusy(value) {
+      state.busy =
+        value;
+
+      sendButton.disabled =
+        value ||
+        !state.backendReady;
+
+      input.disabled =
+        value;
+
+      document
+        .querySelectorAll(
+          '.quick-action'
+        )
+        .forEach(
+          button => {
+            button.disabled =
+              value ||
+              !state.backendReady;
+          }
+        );
+    }
+
+    function formatBackendError(
+      error
+    ) {
+      if (!error) {
+        return 'Erro inesperado ao acessar o backend.';
+      }
+
+      if (
+        typeof error ===
+        'string'
+      ) {
+        return error;
+      }
+
+      return (
+        error.message ||
+        error.details ||
+        'Erro inesperado ao acessar o backend.'
+      );
+    }
+
+    function handleResponse(
+      loadingNode,
+      response
+    ) {
+      removeNode(
+        loadingNode
+      );
+
+      const message =
+        response &&
+        response.mensagem
+          ? response.mensagem
+          : 'Solicitação processada, mas o backend não retornou uma mensagem.';
+
+      addMessage(
+        'assistant',
+        message,
+        {
+          error:
+            !response ||
+            response.ok === false,
+          nature:
+            response &&
+            response.natureza
+              ? response.natureza
+              : (
+                  response &&
+                  response.precisaConfirmacao
+                    ? 'confirmacao'
+                    : ''
+                ),
+          tag:
+            response &&
+            response.rotulo
+              ? response.rotulo
+              : (
+                  response &&
+                  response.precisaConfirmacao
+                    ? 'Confirmação'
+                    : ''
+                ),
+          confirmation:
+            !!(
+              response &&
+              response.precisaConfirmacao
+            )
+        }
+      );
+
+      setBusy(
+        false
+      );
+
+      input.focus();
+    }
+
+    function handleFailure(
+      loadingNode,
+      error,
+      originalText
+    ) {
+      removeNode(
+        loadingNode
+      );
+
+      const text =
+        formatBackendError(
+          error
+        );
+
+      const row =
+        addMessage(
+          'assistant',
+          text,
+          {
+            error: true,
+            nature:
+              'atencao',
+            tag:
+              'Erro'
+          }
+        );
+
+      const bubble =
+        row.querySelector(
+          '.message-bubble'
+        );
+
+      if (
+        bubble &&
+        originalText
+      ) {
+        const actions =
+          document.createElement(
+            'div'
+          );
+
+        actions.className =
+          'confirmation-actions';
+
+        const retry =
+          document.createElement(
+            'button'
+          );
+
+        retry.type =
+          'button';
+
+        retry.className =
+          'confirmation-button cancel';
+
+        retry.textContent =
+          'Tentar novamente';
+
+        retry.addEventListener(
+          'click',
+          () =>
+            sendMessage(
+              originalText
+            )
+        );
+
+        actions.appendChild(
+          retry
+        );
+
+        bubble.appendChild(
+          actions
+        );
+      }
+
+      setBusy(
+        false
+      );
+
+      input.focus();
+    }
+
+    function sendMessage(
+      forcedText
+    ) {
+      if (
+        state.busy ||
+        !state.backendReady
+      ) {
+        return;
+      }
+
+      const text =
+        String(
+          forcedText !== undefined
+            ? forcedText
+            : input.value
+        ).trim();
+
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      disableConfirmationButtons();
+
+      addMessage(
+        'user',
+        text
+      );
+
+      input.value = '';
+      resizeInput();
+
+      const loadingNode =
+        addMessage(
+          'assistant',
+          '',
+          {
+            loading: true,
+            persist: false
+          }
+        );
+
+      setBusy(
+        true
+      );
+
+      const requestId =
+        createRequestId();
+
+      google.script.run
+        .withSuccessHandler(
+          response =>
+            handleResponse(
+              loadingNode,
+              response
+            )
+        )
+        .withFailureHandler(
+          error =>
+            handleFailure(
+              loadingNode,
+              error,
+              text
+            )
+        )
+        .processarMensagemWeb(
+          text,
+          requestId,
+          state.sessionId
+        );
+    }
+
+    function loadBootstrap() {
+      setBackendStatus(
+        'Conectando...',
+        'loading'
+      );
+
+      google.script.run
+        .withSuccessHandler(
+          bootstrap => {
+            const ready =
+              !!(
+                bootstrap &&
+                bootstrap.backend &&
+                bootstrap.backend.pronto
+              );
+
+            state.backendReady =
+              ready;
+
+            setBackendStatus(
+              ready
+                ? 'Backend conectado'
+                : 'Backend pendente',
+              ready
+                ? 'ready'
+                : 'error'
+            );
+
+            setBusy(
+              false
+            );
+
+            if (!ready) {
+              const detail =
+                bootstrap &&
+                bootstrap.backend &&
+                bootstrap.backend.erro
+                  ? bootstrap.backend.erro
+                  : 'Verifique a configuração do backend na planilha QA.';
+
+              addMessage(
+                'assistant',
+                detail,
+                {
+                  error: true,
+                  nature:
+                    'atencao',
+                  tag:
+                    'Configuração'
+                }
+              );
+            }
+          }
+        )
+        .withFailureHandler(
+          error => {
+            state.backendReady =
+              false;
+
+            setBackendStatus(
+              'Falha no backend',
+              'error'
+            );
+
+            addMessage(
+              'assistant',
+              formatBackendError(
+                error
+              ),
+              {
+                error: true,
+                nature:
+                  'atencao',
+                tag:
+                  'Erro'
+              }
+            );
+
+            setBusy(
+              false
+            );
+          }
+        )
+        .obterBootstrapWebApp();
+    }
+
+    form.addEventListener(
+      'submit',
+      event => {
+        event.preventDefault();
+        sendMessage();
+      }
+    );
+
+    input.addEventListener(
+      'input',
+      resizeInput
+    );
+
+    input.addEventListener(
+      'keydown',
+      event => {
+        if (
+          event.key ===
+            'Enter' &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+          sendMessage();
+        }
+      }
+    );
+
+    document
+      .querySelectorAll(
+        '.example-chip'
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            'click',
+            () => {
+              const example =
+                button.getAttribute(
+                  'data-example'
+                );
+
+              input.value =
+                example || '';
+
+              resizeInput();
+              input.focus();
+            }
+          );
+        }
+      );
+
+    document
+      .querySelectorAll(
+        '.quick-action'
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            'click',
+            () => {
+              const command =
+                button.getAttribute(
+                  'data-command'
+                );
+
+              if (command) {
+                sendMessage(
+                  command
+                );
+              }
+            }
+          );
+        }
+      );
+
+    clearChatButton.addEventListener(
+      'click',
+      () => {
+        const confirmClear =
+          window.confirm(
+            'Limpar o histórico deste navegador?'
+          );
+
+        if (confirmClear) {
+          clearHistory();
+        }
+      }
+    );
+
+    state.sessionId =
+      getSessionId();
+
+    loadHistory();
+    restoreHistory();
+    resizeInput();
+    setBusy(
+      false
+    );
+    loadBootstrap();
+  })();
+</script>

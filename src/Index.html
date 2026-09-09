@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta
+      name="theme-color"
+      content="#f5f7fb"
+    >
+    <?!= include_('Styles'); ?>
+  </head>
+
+  <body>
+    <div
+      id="finance-ai-root"
+      class="app-shell"
+    >
+      <header class="topbar">
+        <div class="brand">
+          <div
+            class="brand-mark"
+            aria-hidden="true"
+          >
+            F
+          </div>
+
+          <div class="brand-copy">
+            <h1>
+              Finance AI Lite
+            </h1>
+
+            <p>
+              Assistente financeiro
+            </p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button
+            id="clear-chat"
+            class="clear-chat"
+            type="button"
+            title="Limpar conversa"
+          >
+            Limpar
+          </button>
+
+          <div
+            id="backend-status"
+            class="status-badge status-loading"
+            aria-live="polite"
+          >
+            Conectando...
+          </div>
+        </div>
+      </header>
+
+      <nav
+        class="quick-actions"
+        aria-label="Atalhos financeiros"
+      >
+        <button
+          type="button"
+          class="quick-action"
+          data-command="Como estão minhas finanças este mês?"
+        >
+          Resumo
+        </button>
+
+        <button
+          type="button"
+          class="quick-action"
+          data-command="Como estão minhas faturas?"
+        >
+          Faturas
+        </button>
+
+        <button
+          type="button"
+          class="quick-action"
+          data-command="Liste minhas assinaturas ativas"
+        >
+          Assinaturas
+        </button>
+
+        <button
+          type="button"
+          class="quick-action"
+          data-command="Como estão minhas metas?"
+        >
+          Metas
+        </button>
+
+        <button
+          type="button"
+          class="quick-action"
+          data-command="Me dê o forecast dos próximos 3 meses"
+        >
+          Forecast
+        </button>
+      </nav>
+
+      <main
+        id="chat"
+        class="chat"
+        aria-live="polite"
+      >
+        <div
+          id="welcome-message"
+          class="message-row assistant"
+        >
+          <div class="message-bubble">
+            <div class="message-head">
+              <span class="message-label">
+                Finance AI
+              </span>
+            </div>
+
+            <div class="message-text">Olá. Envie uma movimentação ou faça uma pergunta sobre suas finanças.</div>
+          </div>
+        </div>
+
+        <div
+          id="examples"
+          class="examples"
+        >
+          <span>
+            Exemplos:
+          </span>
+
+          <button
+            type="button"
+            class="example-chip"
+            data-example="Gastei 35 reais no Uber pelo Pix da conta Santander"
+          >
+            Registrar despesa
+          </button>
+
+          <button
+            type="button"
+            class="example-chip"
+            data-example="Recebi 1000 reais na conta Santander"
+          >
+            Registrar receita
+          </button>
+
+          <button
+            type="button"
+            class="example-chip"
+            data-example="Transferi 100 reais do Santander para o Nubank"
+          >
+            Transferência
+          </button>
+        </div>
+      </main>
+
+      <footer class="composer-shell">
+        <form
+          id="message-form"
+          class="composer"
+        >
+          <label
+            for="message-input"
+            class="sr-only"
+          >
+            Mensagem
+          </label>
+
+          <textarea
+            id="message-input"
+            rows="1"
+            maxlength="4000"
+            placeholder="Ex.: Gastei R$ 50 no mercado pelo Pix do Santander"
+            autocomplete="off"
+          ></textarea>
+
+          <button
+            id="send-button"
+            class="send-button"
+            type="submit"
+          >
+            Enviar
+          </button>
+        </form>
+
+        <div class="composer-meta">
+          <span>
+            Enter envia · Shift+Enter quebra linha
+          </span>
+
+          <span>
+            v<?= appVersion ?>
+          </span>
+        </div>
+      </footer>
+    </div>
+
+    <?!= include_('Scripts'); ?>
+  </body>
+</html>

@@ -70,6 +70,14 @@
         <button
           type="button"
           class="quick-action"
+          data-command="Qual é meu maior alerta financeiro agora?"
+        >
+          Insights
+        </button>
+
+        <button
+          type="button"
+          class="quick-action"
           data-command="Como estão minhas faturas?"
         >
           Faturas
@@ -99,6 +107,106 @@
           Forecast
         </button>
       </nav>
+
+      <details
+        id="advanced-search-shortcuts"
+        class="advanced-search-shortcuts"
+      >
+        <summary>
+          <span class="advanced-shortcuts-title">
+            Busca avançada
+          </span>
+          <span class="advanced-shortcuts-subtitle">
+            Filtros, rankings e comparações
+          </span>
+        </summary>
+
+        <div class="advanced-shortcuts-grid">
+          <button
+            type="button"
+            class="advanced-shortcut"
+            data-command="Mostre minhas despesas acima de R$ 200 neste mês"
+          >
+            <strong>Filtrar despesas</strong>
+            <span>Por período e valor</span>
+          </button>
+
+          <button
+            type="button"
+            class="advanced-shortcut"
+            data-command="Quais foram meus 5 maiores gastos deste mês?"
+          >
+            <strong>Maiores gastos</strong>
+            <span>Top 5 do mês</span>
+          </button>
+
+          <button
+            type="button"
+            class="advanced-shortcut"
+            data-command="Quais categorias tiveram mais despesas neste mês?"
+          >
+            <strong>Ranking</strong>
+            <span>Gastos por categoria</span>
+          </button>
+
+          <button
+            type="button"
+            class="advanced-shortcut"
+            data-command="Compare minhas despesas deste mês com o mês passado"
+          >
+            <strong>Comparar meses</strong>
+            <span>Atual x anterior</span>
+          </button>
+
+          <button
+            type="button"
+            class="advanced-shortcut"
+            data-command="Qual categoria mais cresceu entre o mês passado e este mês?"
+          >
+            <strong>Crescimento</strong>
+            <span>Categorias em alta</span>
+          </button>
+        </div>
+      </details>
+
+
+
+      <section
+        id="proactive-insights"
+        class="proactive-insights"
+        aria-label="Prioridades financeiras"
+        hidden
+      >
+        <div class="proactive-head">
+          <div>
+            <span class="proactive-eyebrow">
+              Agora
+            </span>
+            <h2>
+              Prioridades financeiras
+            </h2>
+          </div>
+
+          <button
+            id="refresh-insights"
+            class="refresh-insights"
+            type="button"
+            title="Atualizar prioridades"
+          >
+            Atualizar
+          </button>
+        </div>
+
+        <div
+          id="proactive-insights-list"
+          class="proactive-insights-list"
+        ></div>
+
+        <div
+          id="proactive-insights-meta"
+          class="proactive-insights-meta"
+        ></div>
+      </section>
 
       <main
         id="chat"
@@ -170,7 +278,7 @@
             id="message-input"
             rows="1"
             maxlength="4000"
-            placeholder="Ex.: Gastei R$ 50 no mercado pelo Pix do Santander"
+            placeholder="Ex.: Mostre meus maiores gastos deste mês"
             autocomplete="off"
           ></textarea>
 

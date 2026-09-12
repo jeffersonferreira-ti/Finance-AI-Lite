@@ -1,6 +1,6 @@
 // ===================================================================
-// FINANCE AI LITE v1.1 - FASE 2
-// CAMADA WEB / HTML SERVICE
+// FINANCE AI LITE v1.2
+// WEB APP ENTRY POINT
 // ===================================================================
 
 function doGet() {
@@ -60,6 +60,3 @@ function obterBootstrapWebApp() {
     }
   };
 }
-
-
-

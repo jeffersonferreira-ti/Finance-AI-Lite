@@ -1,4 +1,4 @@
-# Arquitetura
+# Arquitetura — Finance AI Lite v1.2
 
 ## Princípio
 
@@ -10,7 +10,7 @@ Apps Script → valida e executa
 Google Sheets → persiste e apresenta
 ```
 
-A IA não é a fonte de verdade para saldos, faturas ou projeções.
+A IA não é a fonte de verdade para saldos, faturas, alertas, rankings ou comparações.
 
 ## Componentes
 
@@ -28,63 +28,117 @@ A interface implementa:
 
 - `sessionId` por aba;
 - `requestId` para deduplicação;
-- estado de loading;
-- atalhos de consulta;
+- loading;
+- atalhos financeiros;
+- busca avançada;
 - histórico local;
-- confirmação e cancelamento;
+- confirmação/cancelamento;
+- cards estruturados de busca, ranking e comparação;
 - tratamento de erros.
 
 ### Backend
 
-`Code.gs` concentra a maior parte do domínio financeiro.
+`Code.gs` concentra o domínio financeiro e não é publicado integralmente neste repositório público.
 
-`WebApp.gs` concentra a camada de exposição Web.
+`WebApp.gs` expõe o entry point e funções necessárias ao Web App.
 
 O backend utiliza:
 
 - `ScriptProperties` para configuração;
 - `ScriptCache` para contexto temporário;
-- `ScriptLock` para serialização de operações críticas;
-- resolução centralizada da planilha por ID.
+- `ScriptLock` para operações críticas;
+- planilha resolvida por ID;
+- validações determinísticas;
+- gatilhos do Apps Script para automações.
 
 ## Persistência
 
-A planilha é organizada em módulos, incluindo:
+A planilha é organizada em módulos de domínio, incluindo:
 
-- `Transacoes`
-- `Contas`
-- `Saldos`
-- `Cartoes`
-- `Faturas`
-- `PagamentosFatura`
-- `Transferencias`
-- `Assinaturas`
-- `Recorrencias`
-- `Orcamentos`
-- `ResumoOrcamentos`
-- `Metas`
-- `AportesMetas`
-- `Analises`
-- `Padroes`
-- `Previsoes`
-- `Relatorios`
-- `ConversasIA`
+- `Transacoes`;
+- `Contas`;
+- `Saldos`;
+- `Cartoes`;
+- `Faturas`;
+- `PagamentosFatura`;
+- `Transferencias`;
+- `Assinaturas`;
+- `Recorrencias`;
+- `Orcamentos`;
+- `ResumoOrcamentos`;
+- `Metas`;
+- `AportesMetas`;
+- `Analises`;
+- `Padroes`;
+- `Previsoes`;
+- `Insights`;
+- `Alertas`;
+- `HistoricoAlertas`;
+- `Relatorios`;
+- `ConversasIA`;
+- `Auditoria`.
 
 ## Gemini
 
-O Gemini é utilizado para classificação de intenção e extração estruturada.
+O Gemini é utilizado para classificação de intenção, extração estruturada e narrativa baseada em resultados já calculados.
 
-Exemplos de operações interpretadas:
+Exemplos:
 
-- movimentação;
-- transferência;
-- recorrência;
-- criação/consulta/alteração de assinatura;
-- criação/aporte/consulta de meta;
+- movimentações;
+- transferências;
+- recorrências;
+- assinaturas;
+- metas;
 - consultas financeiras;
+- insights;
+- busca avançada;
 - relatórios.
 
-As validações posteriores são feitas pelo motor financeiro.
+As validações e cálculos posteriores são feitos pelo motor financeiro.
+
+## Auditoria
+
+Edição e exclusão de transações são confirmadas antes da mutação e registradas em trilha própria.
+
+Operações reversíveis podem ser desfeitas após revalidação do estado.
+
+## Dashboard
+
+O Dashboard v2 é calculado pelo Apps Script e suporta:
+
+- KPIs;
+- tendências;
+- comparações;
+- filtros;
+- histórico;
+- drill-down;
+- insights proativos.
+
+## Insights
+
+O motor determinístico identifica evidências e prioridades.
+
+O Gemini pode transformar os resultados em linguagem natural, sem recalcular os números.
+
+## Alertas
+
+Alertas são produzidos deterministicamente para orçamento, fatura, assinatura e meta.
+
+A central mantém estado, ocorrências e histórico; automações atualizam alertas e resumo semanal.
+
+## Busca financeira avançada
+
+A busca usa uma requisição estruturada com filtros AND e períodos determinísticos.
+
+A camada 5.2 adiciona:
+
+- agrupamentos;
+- rankings;
+- deltas;
+- comparações entre períodos;
+- crescimento de categorias.
+
+A camada conversacional interpreta a pergunta e delega o cálculo aos motores determinísticos.
 
 ## Cartões
 
@@ -98,14 +152,8 @@ Assinaturas são entidades próprias.
 
 Uma despesa categorizada como `Assinaturas` não cria automaticamente uma assinatura recorrente.
 
-O cadastro explícito de uma assinatura sincroniza uma recorrência mensal.
-
-## Previsões
-
-O forecast utiliza dados conhecidos e comportamento histórico para estimar três meses.
-
-A projeção diferencia compromissos conhecidos de componente variável estimado.
+O cadastro explícito sincroniza uma recorrência mensal.
 
 ## Compatibilidade pt-BR
 
-A v1.1.1 detecta a localidade da planilha e gera fórmulas compatíveis com o separador utilizado pelo Google Sheets em `pt-BR`.
+A camada de fórmulas detecta a localidade da planilha e usa o separador compatível com `pt-BR`.

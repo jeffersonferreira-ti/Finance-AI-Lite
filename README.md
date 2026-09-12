@@ -3,8 +3,8 @@
 <img src="https://img.shields.io/badge/Google%20Apps%20Script-Backend-4285F4?style=for-the-badge&logo=google&logoColor=white"/>
 <img src="https://img.shields.io/badge/Google%20Sheets-Data%20Layer-34A853?style=for-the-badge&logo=googlesheets&logoColor=white"/>
 <img src="https://img.shields.io/badge/Gemini-IA%20%2F%20NLP-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white"/>
-<img src="https://img.shields.io/badge/Status-Funcional-00C853?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/Version-1.1.1-6A1B9A?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Status-Est%C3%A1vel-00C853?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Version-1.2-6A1B9A?style=for-the-badge"/>
 
 <br/><br/>
 
@@ -29,7 +29,7 @@ No controle financeiro pessoal, tarefas simples ainda costumam exigir muita inte
 | Controlar cartões e faturas separadamente | Risco de inconsistência |
 | Acompanhar assinaturas e recorrências | Gastos recorrentes passam despercebidos |
 | Interpretar planilhas financeiras | Informação existe, mas nem sempre gera entendimento |
-| Projetar os próximos meses | Decisões são tomadas sem visão futura |
+| Encontrar tendências e desvios | Decisões são tomadas sem contexto suficiente |
 
 Planilhas resolvem o armazenamento, mas nem sempre resolvem a experiência de uso.
 
@@ -45,13 +45,13 @@ Em vez de preencher formulários, o usuário descreve o que aconteceu em linguag
 Gastei R$ 35 no transporte pelo Pix da minha conta principal.
 ```
 
-Ou simplesmente pergunta:
+Ou consulta os dados diretamente:
 
 ```text
-Como estão minhas finanças este mês?
+Compare minhas despesas deste mês com o mês passado.
 ```
 
-O sistema interpreta a intenção com o **Gemini**, valida a operação no **Google Apps Script**, aplica regras financeiras determinísticas e registra ou consulta os dados no **Google Sheets**.
+O **Gemini** interpreta a intenção; o **Google Apps Script** valida e executa regras financeiras determinísticas; o **Google Sheets** funciona como ledger, camada de persistência e base analítica.
 
 > **Princípio do projeto:** a IA interpreta; o código financeiro decide.
 
@@ -60,209 +60,161 @@ O sistema interpreta a intenção com o **Gemini**, valida a operação no **Goo
 ## ⚙️ Como Funciona
 
 ```text
-Usuario
+Usuário
    |
    v
 Web App responsivo
    |
    v
-Gemini API -> Interpretacao de linguagem natural
+Gemini API -> interpretação de linguagem natural
    |
    v
-Google Apps Script -> Validacao + Regras financeiras
+Google Apps Script -> validação + regras determinísticas
    |
    v
-Google Sheets -> Persistencia + Dashboard + Analises
+Google Sheets -> persistência + dashboard + análises
    |
    v
-Resposta conversacional
+Resposta conversacional + resultados estruturados
 ```
 
-O Gemini identifica a intenção e extrai os dados necessários.
+Os cálculos críticos não são delegados à IA: saldos, faturas, parcelas, transferências, orçamentos, alertas, recorrências, metas, rankings e comparações são processados pelo motor determinístico.
 
-Os cálculos financeiros importantes não ficam sob responsabilidade da IA: saldos, faturas, parcelas, vencimentos, recorrências, metas e projeções são tratados pelo motor determinístico.
+---
+
+## ✨ Destaques da v1.2
+
+A versão **1.2** consolida cinco frentes principais:
+
+- **auditoria e correção de dados:** edição, exclusão e desfazer operações com rastreabilidade;
+- **Dashboard v2:** filtros, tendências, comparativos, drill-down e indicadores;
+- **Insights:** motor determinístico, respostas conversacionais e insights proativos;
+- **Alertas e automações:** orçamento, faturas, assinaturas, metas, central de alertas e resumo semanal;
+- **Busca financeira avançada:** filtros por período/conta/cartão/categoria/valor, rankings, comparações e consultas em linguagem natural.
+
+A camada Web também ganhou apresentação estruturada para buscas, rankings e comparações, mantendo a resposta narrativa.
 
 ---
 
 ## 🔍 Funcionalidades
 
-### 💰 Movimentações
+### 💰 Movimentações e auditoria
 
-- Receitas e despesas
-- Registro por linguagem natural
-- Pix e meios de pagamento
-- Categorização automática
-- Regras personalizadas de categoria
-- Observação e texto original da operação
+- receitas e despesas;
+- registro por linguagem natural;
+- Pix e outros meios de pagamento;
+- categorização automática;
+- regras personalizadas de categoria;
+- edição e exclusão com confirmação;
+- desfazer última edição/exclusão elegível;
+- trilha de auditoria.
 
-### 🏦 Contas e Saldos
+### 🏦 Contas, cartões e faturas
 
-- Cadastro de contas
-- Saldo inicial
-- Receitas e despesas imediatas
-- Transferências entre contas
-- Pagamentos de fatura
-- Saldo calculado por conta
+- saldo por conta;
+- transferências entre contas próprias;
+- compras no crédito;
+- compras parceladas;
+- fechamento e vencimento;
+- pagamentos parciais ou integrais de fatura;
+- prevenção de dupla contabilização.
 
-### 💳 Cartões e Faturas
+### 🔁 Assinaturas e recorrências
 
-- Cadastro de cartões
-- Limite
-- Dia de fechamento
-- Dia de vencimento
-- Compras no crédito
-- Compras parceladas
-- Competência de fatura
-- Pagamento parcial ou integral
-- Saldo da fatura
-- Próximos vencimentos
+- criação por linguagem natural;
+- próxima cobrança;
+- custo mensal/anual;
+- pausa, cancelamento e reativação;
+- sincronização com recorrências;
+- processamento automático.
 
-### 🔁 Assinaturas e Recorrências
+### 🎯 Metas e orçamentos
 
-- Criação de assinatura por linguagem natural
-- Listagem de assinaturas ativas
-- Próxima cobrança
-- Custo mensal e anual
-- Identificação da assinatura mais cara
-- Pausa
-- Cancelamento
-- Reativação
-- Recorrências mensais vinculadas
+- metas com valor alvo, data e prioridade;
+- aportes e progresso;
+- limite mensal por categoria;
+- uso do orçamento;
+- status de atenção e excesso.
 
-### 🎯 Metas Financeiras
+### 📊 Dashboard v2
 
-- Valor alvo
-- Valor inicial
-- Data alvo
-- Prioridade
-- Aportes
-- Progresso acumulado
-- Valor restante
-- Aporte mensal necessário
+- receitas, despesas e resultado;
+- taxa de poupança;
+- saldo total;
+- próxima fatura;
+- comparação com mês anterior;
+- histórico de seis meses;
+- filtros por conta, cartão e categoria;
+- drill-down de transações;
+- insights prioritários.
 
-### 📊 Orçamentos
+### 🧠 Insights e alertas
 
-- Limite mensal por categoria
-- Gasto realizado
-- Valor restante
-- Percentual de uso
-- Status por faixa
-- Identificação de categorias acima do limite
+- padrões e anomalias;
+- ritmo de gastos;
+- concentração por categoria;
+- alertas de orçamento;
+- faturas próximas/atrasadas;
+- cobranças de assinaturas;
+- metas em risco;
+- central com ciclo de vida e histórico;
+- resumo semanal automatizado.
 
-### 🧠 Inteligência Financeira
+### 🔎 Busca financeira avançada
 
-- Resumo mensal
-- Gastos por categoria
-- Diagnóstico financeiro
-- Saúde financeira
-- Comparação entre meses
-- Detecção de anomalias
-- Tendências
-- Ritmo de orçamento
-- Forecast de 3 meses
-- Relatórios financeiros
+Consultas determinísticas com:
 
-### 💬 Experiência Conversacional
+- períodos relativos e intervalos;
+- descrição e texto livre;
+- categoria;
+- conta;
+- cartão;
+- tipo;
+- meio de pagamento;
+- valor exato, mínimo e máximo;
+- parcelamentos;
+- ordenação;
+- rankings agrupados;
+- maiores lançamentos;
+- comparação entre períodos;
+- categorias que mais cresceram.
 
-- Contexto entre mensagens
-- Perguntas de complemento
-- Confirmação antes de ações sensíveis
-- Botões **Confirmar** e **Cancelar**
-- Histórico local da conversa
-- Atalhos financeiros
-- Tratamento de erros
-- Interface responsiva para desktop e mobile
-
----
-
-## 💬 Exemplos de Uso
-
-### Registrar uma despesa
+Exemplos:
 
 ```text
-Gastei R$ 42,90 no mercado pelo Pix da minha conta principal
+Mostre minhas despesas acima de R$ 200 neste mês.
 ```
-
-### Registrar uma transferência
 
 ```text
-Transferi R$ 150 da conta principal para a conta de reserva
+Quais foram meus 5 maiores gastos deste mês?
 ```
-
-### Criar uma assinatura
 
 ```text
-Cadastre um servico de streaming como assinatura de R$ 21,90 por mes,
-cobrada todo dia 10 no cartao principal
+Qual categoria mais cresceu entre o mês passado e este mês?
 ```
 
-### Consultar o mês
+### 💬 Experiência conversacional
 
-```text
-Como estão minhas finanças este mês?
-```
-
-### Consultar assinaturas
-
-```text
-Liste minhas assinaturas ativas
-```
-
-### Consultar forecast
-
-```text
-Me dê o forecast dos próximos 3 meses
-```
-
-### Cancelar uma assinatura
-
-```text
-Cancele minha assinatura de streaming
-```
-
-O sistema solicita confirmação antes de executar a alteração.
-
----
-
-## 📈 Dashboard e Análises
-
-O Finance AI Lite mantém uma visão consolidada das principais informações financeiras.
-
-O dashboard inclui indicadores como:
-
-- receitas do mês
-- despesas do mês
-- saldo
-- despesas por categoria
-- situação dos orçamentos
-- metas financeiras
-- forecast
-- faturas previstas
-- saldo após compromissos conhecidos
-
-Além do dashboard, o usuário pode consultar os mesmos dados de forma conversacional.
-
-Exemplo:
-
-```text
-Resumo do mes:
-Receitas: R$ 3.500,00
-Despesas: R$ 2.180,00
-Resultado conhecido: R$ 1.320,00
-```
+- contexto entre mensagens;
+- perguntas de complemento;
+- confirmação de ações sensíveis;
+- histórico local;
+- atalhos rápidos;
+- busca avançada descobrível;
+- cards estruturados de resultados;
+- estados vazios;
+- interface responsiva para desktop e mobile.
 
 ---
 
 ## 🧾 Regras Financeiras
-
-O projeto diferencia eventos que não devem ser contabilizados da mesma maneira.
 
 ### Compra no cartão de crédito
 
 Uma compra no crédito **não reduz imediatamente o saldo bancário**.
 
 ```text
-Compra no credito -> Fatura -> Pagamento da fatura -> Impacto no caixa
+Compra no crédito -> Fatura -> Pagamento da fatura -> Impacto no caixa
 ```
 
 ### Transferência entre contas próprias
@@ -277,33 +229,15 @@ Resultado financeiro = R$ 0
 
 ### Pagamento de fatura
 
-O pagamento da fatura reduz o caixa, mas não cria uma nova despesa, evitando dupla contabilização.
+O pagamento reduz o caixa, mas não cria uma nova despesa, evitando dupla contabilização.
 
 ### Parcelamento
 
-Compras parceladas são distribuídas pelas competências correspondentes e o sistema preserva o valor total mesmo quando há divisão de centavos.
+Parcelas são distribuídas pelas competências correspondentes e o valor total é preservado mesmo quando há divisão de centavos.
 
 ---
 
 ## 🖥️ Web App
-
-A versão `v1.1` introduziu uma interface Web própria para o Finance AI Lite.
-
-A aplicação foi homologada em:
-
-- Desktop
-- iPhone / mobile
-
-A interface oferece:
-
-- chat responsivo
-- atalhos para consultas frequentes
-- loading durante processamento
-- histórico da sessão
-- persistência local do histórico
-- contexto conversacional
-- confirmações por botão
-- nova tentativa em falhas de comunicação
 
 A pasta [`src/`](src/) contém a camada Web publicada neste repositório:
 
@@ -315,9 +249,19 @@ src/
 `-- Scripts.html
 ```
 
-O motor financeiro de produção não é publicado integralmente neste repositório público porque contém regras e configurações específicas do ambiente pessoal de uso.
+Na v1.2, a interface inclui:
 
-A arquitetura e as decisões de domínio estão documentadas em [`docs/`](docs/).
+- chat responsivo;
+- atalhos financeiros;
+- busca avançada;
+- cards de busca/ranking/comparação;
+- filtros e períodos exibidos como metadados;
+- persistência local da conversa;
+- confirmação e cancelamento;
+- tratamento de falhas;
+- suporte a desktop e mobile.
+
+> O motor financeiro completo de produção não é publicado neste repositório público. O repositório mantém uma versão segura para portfólio, documentação e demonstração da camada Web.
 
 ---
 
@@ -333,7 +277,8 @@ Finance-AI-Lite/
 |
 |-- docs/
 |   |-- ARCHITECTURE.md
-|   `-- FEATURES.md
+|   |-- FEATURES.md
+|   `-- RELEASE_v1.2.md
 |
 |-- SECURITY.md
 |-- .gitignore
@@ -344,7 +289,7 @@ Arquitetura lógica:
 
 ```text
                    +-------------------+
-                   |      Usuario      |
+                   |      Usuário      |
                    +---------+---------+
                              |
                              v
@@ -358,9 +303,9 @@ Arquitetura lógica:
               |     Google Apps Script      |
               |-----------------------------|
               | Motor financeiro            |
-              | Validacoes                  |
-              | Contexto conversacional     |
-              | Regras de negocio           |
+              | Busca / rankings            |
+              | Insights / alertas          |
+              | Automações                  |
               +------+---------------+------+
                      |               |
                      v               v
@@ -387,51 +332,19 @@ Mais detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ---
 
-## Como Executar
-
-### Pré-requisitos
-
-- Conta Google
-- Google Sheets
-- Projeto Google Apps Script
-- Chave da Gemini API
-
-As configurações sensíveis devem ser adicionadas em:
-
-```text
-Apps Script
--> Project Settings
--> Script Properties
-```
-
-Propriedades utilizadas:
-
-```text
-GEMINI_API_KEY
-FINANCE_AI_SPREADSHEET_ID
-```
-
-O Web App é publicado através de uma implantação do tipo **App da Web** no Google Apps Script.
-
-> Este repositório público possui foco em portfólio e documentação. O motor financeiro completo de produção e os dados pessoais utilizados na instância real não são distribuídos publicamente.
-
----
-
 ## 🔐 Segurança
 
-O projeto foi estruturado para não armazenar credenciais diretamente no código-fonte.
+Credenciais e dados pessoais não são versionados.
 
-Não devem ser versionados:
+Não devem ser publicados:
 
-- chaves da Gemini API
-- IDs privados de planilhas
-- tokens
-- exports financeiros reais
-- dados de contas
-- faturas reais
-- histórico financeiro pessoal
-
-Arquivos locais e exports sensíveis são cobertos pelo `.gitignore`.
+- chaves da Gemini API;
+- IDs privados de planilhas;
+- tokens;
+- exports financeiros;
+- dados bancários reais;
+- faturas reais;
+- histórico financeiro pessoal.
 
 Consulte [`SECURITY.md`](SECURITY.md).
 
@@ -439,32 +352,31 @@ Consulte [`SECURITY.md`](SECURITY.md).
 
 ## 🧪 Homologação
 
-Antes da consolidação da versão `v1.1`, o projeto passou por testes funcionais e regressivos cobrindo:
+A v1.2 passou por desenvolvimento incremental em ambiente de QA, com testes automatizados, regressões entre fases e smoke tests no Web App.
 
-- núcleo financeiro
-- cartões e faturas
-- assinaturas e recorrências
-- metas
-- inteligência e forecast
-- Gemini / NLP
-- backend do Web App
-- interface Web
-- contexto conversacional
-- confirmação de ações
+A homologação cobriu:
 
-Os fluxos principais também foram testados manualmente em desktop e iPhone.
+- auditoria e correção de transações;
+- Dashboard v2;
+- insights;
+- alertas e automações;
+- busca financeira avançada;
+- rankings e comparações;
+- consultas conversacionais;
+- regressão das funcionalidades anteriores;
+- interface Web em fluxos desktop/mobile.
 
 ---
 
 ## ⚠️ Limitações
 
-- Projeto atualmente orientado a uso pessoal
-- Não possui autenticação multiusuário
-- Não possui integração direta com Open Finance
-- Não importa automaticamente movimentações bancárias
-- Não possui integração com WhatsApp na versão atual
-- Google Sheets permanece como camada principal de persistência
-- O motor financeiro completo de produção não está publicado no repositório público
+- projeto orientado a uso pessoal;
+- sem autenticação multiusuário;
+- sem integração direta com Open Finance;
+- sem importação automática bancária;
+- sem integração com WhatsApp na versão atual;
+- Google Sheets permanece como camada principal de persistência;
+- o motor financeiro completo de produção não é distribuído no repositório público.
 
 ---
 
@@ -475,7 +387,8 @@ Os fluxos principais também foram testados manualmente em desktop e iPhone.
 | v1.0 | Motor financeiro, Sheets, Gemini e módulos de inteligência | ✅ Concluído |
 | v1.1 | Web App responsivo + experiência conversacional | ✅ Concluído |
 | v1.1.1 | Compatibilidade de fórmulas com localidade `pt-BR` | ✅ Concluído |
-| v1.2 | Melhorias de UX, alertas e automações | 💡 Futuro |
+| v1.2 | Auditoria, Dashboard v2, Insights, Alertas, Busca avançada e UX | ✅ Concluído |
+| v1.3 | Captura multimodal / novas integrações | 🧭 Planejado |
 | v2.0 | Multiusuário / Open Finance / nova camada de dados | 💡 Futuro |
 
 ---
@@ -484,26 +397,25 @@ Os fluxos principais também foram testados manualmente em desktop e iPhone.
 
 Projeto desenvolvido para demonstrar e evoluir conhecimentos em:
 
-- inteligência artificial aplicada
-- integração com APIs de IA
-- automação com Google Apps Script
-- modelagem de regras de negócio
-- processamento de linguagem natural
-- desenvolvimento Web
-- arquitetura de software
-- persistência e análise de dados
-- experiência conversacional
-- engenharia aplicada a finanças pessoais
+- inteligência artificial aplicada;
+- integração com APIs de IA;
+- automação com Google Apps Script;
+- modelagem de regras de negócio;
+- processamento de linguagem natural;
+- desenvolvimento Web;
+- arquitetura de software;
+- persistência e análise de dados;
+- observabilidade de estados e automações;
+- experiência conversacional;
+- engenharia aplicada a finanças pessoais.
 
-O Finance AI Lite também explora um conceito central de produto:
-
-> **Registrar uma movimentação financeira deve ser tão simples quanto descrevê-la.**
+> **Registrar e consultar uma movimentação financeira deve ser tão simples quanto descrevê-la.**
 
 ---
 
 ## 👨‍💻 Desenvolvido por **Jefferson Ferreira**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/jefferson-ferreira-ti/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/jefferson-ferreira-tech/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=flat&logo=github)](https://github.com/jeffersonferreira-ti)
 
 ---

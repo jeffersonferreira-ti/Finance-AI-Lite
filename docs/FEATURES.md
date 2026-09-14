@@ -1,4 +1,4 @@
-# Funcionalidades — Finance AI Lite v1.2
+# Funcionalidades — Finance AI Lite v1.2.4
 
 ## Movimentações e auditoria
 
@@ -27,6 +27,16 @@ Saldo inicial
 
 Compras no crédito não reduzem o caixa imediatamente.
 
+Desde a v1.2.3, consultas explícitas sobre contas ativas possuem roteamento determinístico para reduzir ambiguidade com assinaturas e outras entidades.
+
+Exemplos:
+
+```text
+Quantas contas tenho ativas?
+Quais contas tenho ativas?
+Liste minhas contas bancárias.
+```
+
 ## Cartões e faturas
 
 - cadastro de cartão;
@@ -36,7 +46,15 @@ Compras no crédito não reduzem o caixa imediatamente.
 - competência de fatura;
 - pagamento parcial/integral;
 - saldo de fatura;
-- próximos vencimentos.
+- próximos vencimentos;
+- contratos específicos para pagamento de fatura.
+
+## Transferências
+
+- transferência entre contas próprias;
+- conta de origem e destino;
+- neutralidade no resultado financeiro agregado;
+- contrato específico separado de movimentações comuns.
 
 ## Assinaturas e recorrências
 
@@ -46,7 +64,9 @@ Compras no crédito não reduzem o caixa imediatamente.
 - pausa, cancelamento e reativação;
 - recorrência mensal vinculada;
 - processamento automático;
-- confirmação antes de mutações.
+- confirmação antes de mutações;
+- listagem de assinaturas ativas uma por linha;
+- total mensal equivalente exibido separadamente.
 
 ## Orçamentos
 
@@ -94,7 +114,9 @@ Compras no crédito não reduzem o caixa imediatamente.
 - ritmo de orçamento;
 - forecast;
 - insights determinísticos;
-- respostas conversacionais baseadas em evidência.
+- respostas conversacionais baseadas em evidência;
+- roteamento por operação;
+- schemas e contexto focados para reduzir truncamentos e ambiguidade.
 
 ## Alertas e automações
 
@@ -136,4 +158,14 @@ Compras no crédito não reduzem o caixa imediatamente.
 - respostas narrativas;
 - resultados estruturados;
 - filtros/períodos visíveis;
-- estados vazios.
+- estados vazios;
+- preservação de listas e quebras de linha em respostas textuais.
+
+## Homologação atual
+
+A v1.2.4 Stable CLEAN foi validada com:
+
+- **58/58 verificações estáveis**;
+- smoke tests na principal;
+- smoke tests no `/dev`;
+- smoke tests no `/exec` publicado.

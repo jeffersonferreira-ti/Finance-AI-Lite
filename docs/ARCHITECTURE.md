@@ -1,16 +1,63 @@
-# Arquitetura — Finance AI Lite v1.2
+# Arquitetura — Finance AI Lite v1.2.4
 
 ## Princípio
 
 O Finance AI Lite separa interpretação de linguagem natural de cálculo financeiro.
 
 ```text
-Gemini → interpreta intenção
+Gemini → interpreta intenção quando necessário
 Apps Script → valida e executa
 Google Sheets → persiste e apresenta
 ```
 
-A IA não é a fonte de verdade para saldos, faturas, alertas, rankings ou comparações.
+> **IA interpreta; código decide.**
+
+A IA não é a fonte de verdade para saldos, faturas, alertas, rankings, transferências, pagamentos ou comparações.
+
+## Fluxo de roteamento
+
+A linha v1.2.x passou a usar uma arquitetura mais focada por operação:
+
+```text
+Mensagem
+  ↓
+Roteamento determinístico quando a intenção é óbvia
+  ↓
+Roteador Gemini pequeno quando necessário
+  ↓
+Operação identificada
+  ↓
+Schema focado + prompt focado + contexto focado
+  ↓
+Validação determinística
+  ↓
+Motor financeiro
+  ↓
+Persistência / consulta
+```
+
+Essa abordagem reduz ambiguidades e evita enviar um schema monolítico para toda mensagem.
+
+## Operações conversacionais
+
+O backend diferencia operações como:
+
+- movimentação;
+- pagamento de fatura;
+- transferência entre contas;
+- recorrência;
+- edição;
+- exclusão;
+- desfazer;
+- assinaturas;
+- metas;
+- consultas financeiras;
+- consultas de insights;
+- busca avançada;
+- consulta livre;
+- relatórios.
+
+Consultas óbvias podem usar fast paths determinísticos. A v1.2.3 adicionou esse comportamento para consultas de contas ativas.
 
 ## Componentes
 
@@ -34,7 +81,8 @@ A interface implementa:
 - histórico local;
 - confirmação/cancelamento;
 - cards estruturados de busca, ranking e comparação;
-- tratamento de erros.
+- tratamento de erros;
+- preservação de quebras de linha em respostas textuais.
 
 ### Backend
 
@@ -82,25 +130,46 @@ A planilha é organizada em módulos de domínio, incluindo:
 
 O Gemini é utilizado para classificação de intenção, extração estruturada e narrativa baseada em resultados já calculados.
 
-Exemplos:
+As chamadas devem usar, sempre que possível:
 
-- movimentações;
-- transferências;
-- recorrências;
-- assinaturas;
-- metas;
-- consultas financeiras;
-- insights;
-- busca avançada;
-- relatórios.
+- operação específica;
+- contexto mínimo necessário;
+- schema específico;
+- saída estruturada.
 
-As validações e cálculos posteriores são feitos pelo motor financeiro.
+Histórico de desenvolvimento mostrou que schemas excessivamente amplos aumentam o risco de truncamento de resposta.
 
-## Auditoria
+## Regras determinísticas
+
+### Cartões
+
+Compras no crédito são registradas por competência de fatura.
+
+O pagamento de fatura é armazenado separadamente da despesa original para evitar dupla contabilização.
+
+### Transferências
+
+Transferência entre contas próprias não é receita nem despesa.
+
+### Auditoria
 
 Edição e exclusão de transações são confirmadas antes da mutação e registradas em trilha própria.
 
 Operações reversíveis podem ser desfeitas após revalidação do estado.
+
+### Consulta de contas
+
+Desde a v1.2.3, perguntas explícitas sobre contas ativas usam roteamento determinístico, reduzindo conflito semântico com assinaturas e outras entidades.
+
+### Assinaturas
+
+Assinaturas são entidades próprias.
+
+Uma despesa categorizada como `Assinaturas` não cria automaticamente uma assinatura recorrente.
+
+O cadastro explícito sincroniza uma recorrência mensal quando aplicável.
+
+Na v1.2.4, a apresentação das assinaturas ativas foi refinada para uma entrada por linha, sem alterar o cálculo do custo mensal.
 
 ## Dashboard
 
@@ -114,23 +183,21 @@ O Dashboard v2 é calculado pelo Apps Script e suporta:
 - drill-down;
 - insights proativos.
 
-## Insights
+Dar F5 na planilha não substitui a atualização dos dados derivados. Alterações manuais relevantes devem ser seguidas por `Atualizar resumos financeiros`.
 
-O motor determinístico identifica evidências e prioridades.
+## Insights e alertas
 
-O Gemini pode transformar os resultados em linguagem natural, sem recalcular os números.
+O motor determinístico identifica evidências, prioridades e eventos.
 
-## Alertas
+O Gemini pode transformar resultados em linguagem natural, sem recalcular os números.
 
 Alertas são produzidos deterministicamente para orçamento, fatura, assinatura e meta.
 
-A central mantém estado, ocorrências e histórico; automações atualizam alertas e resumo semanal.
-
 ## Busca financeira avançada
 
-A busca usa uma requisição estruturada com filtros AND e períodos determinísticos.
+A busca usa requisições estruturadas, filtros AND e períodos determinísticos.
 
-A camada 5.2 adiciona:
+Suporta:
 
 - agrupamentos;
 - rankings;
@@ -140,20 +207,16 @@ A camada 5.2 adiciona:
 
 A camada conversacional interpreta a pergunta e delega o cálculo aos motores determinísticos.
 
-## Cartões
-
-Compras no crédito são registradas por competência de fatura.
-
-O pagamento de fatura é armazenado separadamente da despesa original para evitar dupla contabilização.
-
-## Recorrências e assinaturas
-
-Assinaturas são entidades próprias.
-
-Uma despesa categorizada como `Assinaturas` não cria automaticamente uma assinatura recorrente.
-
-O cadastro explícito sincroniza uma recorrência mensal.
-
 ## Compatibilidade pt-BR
 
 A camada de fórmulas detecta a localidade da planilha e usa o separador compatível com `pt-BR`.
+
+## QA e release
+
+O fluxo recomendado é:
+
+```text
+Desenvolvimento → QA → testes → smoke → Stable → Stable CLEAN → principal → /dev → /exec
+```
+
+A v1.2.4 Stable CLEAN foi validada com **58/58 verificações** e smoke tests no deployment publicado.

@@ -241,7 +241,7 @@ src/
 `-- Scripts.html
 ```
 
-> O motor financeiro completo de produção não é publicado neste repositório público. O repositório mantém uma versão segura para portfólio, documentação e demonstração da camada Web.
+> O motor financeiro completo de produção não é publicado neste repositório público. A pasta `src/` mantém uma versão demonstrativa e segura da camada Web para portfólio; ela não replica necessariamente todos os detalhes internos da interface e do backend privados de produção.
 
 ---
 

@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/Google%20Sheets-Data%20Layer-34A853?style=for-the-badge&logo=googlesheets&logoColor=white"/>
 <img src="https://img.shields.io/badge/Gemini-IA%20%2F%20NLP-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white"/>
 <img src="https://img.shields.io/badge/Status-Est%C3%A1vel-00C853?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/Version-1.2.4-6A1B9A?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Version-1.2.5-6A1B9A?style=for-the-badge"/>
 
 <br/><br/>
 
@@ -78,17 +78,23 @@ A linha **v1.2.x** reforçou essa separação com roteamento por operação, con
 
 ---
 
-## ✨ Destaques da v1.2.4
+## ✨ Destaques da v1.2.5
 
-A **v1.2.4 Stable CLEAN** consolida a arquitetura da série v1.2 e adiciona refinamentos de experiência e confiabilidade:
+A **v1.2.5 Stable CLEAN** amplia a linha v1.2 com foco em experiência, consultas de cartão e previsibilidade operacional:
 
-- roteamento estruturado por operação para reduzir ambiguidades e respostas truncadas;
-- contratos específicos para movimentações, transferências e pagamento de fatura;
-- consulta determinística de contas ativas, evitando confusão com assinaturas;
-- listagem de assinaturas em formato legível, uma assinatura por linha;
-- preservação da separação entre IA/NLP e regras financeiras determinísticas;
-- regressão estável com **58 verificações automatizadas**;
-- validação final em QA, principal, `/dev` e `/exec`.
+- dashboard Web redesenhado, responsivo e com temas claro/escuro;
+- KPIs, gráficos, contas, cartões, assinaturas, vencimentos, metas e insights reorganizados;
+- nova operação dedicada `ConsultaFaturas`, separada de consultas financeiras genéricas;
+- consulta de faturas por cartão, competência, status, abertas, total em aberto e próxima fatura;
+- listagem determinística dos itens da fatura, preservando a data original da compra;
+- parcelamentos exibidos na competência correta sem perder a data original;
+- estados conversacionais de fatura simplificados para **Em aberto**, **Paga** e **Vencida**;
+- categorização determinística de serviços de assinatura conhecidos, compartilhada pelo fluxo geral e pelo fast path;
+- renderer estruturado para faturas no chat, com melhor leitura em desktop/mobile e copy/paste consistente;
+- suíte consolidada com **133 verificações automatizadas**;
+- homologação concluída em QA, planilha principal, `/dev` e `/exec`.
+
+> O motor financeiro completo continua privado. O repositório público documenta a arquitetura e mantém uma camada Web segura para portfólio.
 
 ---
 
@@ -114,7 +120,9 @@ A **v1.2.4 Stable CLEAN** consolida a arquitetura da série v1.2 e adiciona refi
 - compras parceladas;
 - fechamento e vencimento;
 - pagamentos parciais ou integrais de fatura;
-- prevenção de dupla contabilização.
+- prevenção de dupla contabilização;
+- consulta dedicada de faturas abertas, próxima fatura, status e competência;
+- listagem dos itens da fatura com data original da compra e informação de parcela.
 
 ### 🔁 Assinaturas e recorrências
 
@@ -136,15 +144,16 @@ A **v1.2.4 Stable CLEAN** consolida a arquitetura da série v1.2 e adiciona refi
 
 ### 📊 Dashboard v2
 
-- receitas, despesas e resultado;
-- taxa de poupança;
-- saldo total;
-- próxima fatura;
-- comparação com mês anterior;
-- histórico de seis meses;
+- layout financeiro redesenhado para desktop e mobile;
+- temas claro e escuro;
+- receitas, despesas, resultado e taxa de poupança;
+- saldo total e próxima fatura;
+- gráfico de Receitas x Despesas;
+- distribuição de despesas por categoria;
+- contas, cartões, assinaturas e vencimentos;
+- histórico de resultados, metas e insights prioritários;
 - filtros por conta, cartão e categoria;
-- drill-down de transações;
-- insights prioritários.
+- drill-down de transações.
 
 ### 🧠 Insights, alertas e previsões
 
@@ -251,7 +260,8 @@ Finance-AI-Lite/
 |   |-- FEATURES.md
 |   |-- USAGE.md
 |   |-- RELEASE_v1.2.md
-|   `-- RELEASE_v1.2.4.md
+|   |-- RELEASE_v1.2.4.md
+|   `-- RELEASE_v1.2.5.md
 |
 |-- SECURITY.md
 |-- .gitignore
@@ -295,17 +305,20 @@ Consulte [`SECURITY.md`](SECURITY.md).
 
 ## 🧪 Homologação
 
-A **v1.2.4 Stable CLEAN** foi promovida após:
+A **v1.2.5 Stable CLEAN** foi promovida após:
 
 ```text
-QA específica -> aprovada
-Regressão principal -> 58/58
+Suíte estável -> 133/133
+QA funcional -> aprovada
+Planilha principal -> validada
 Smoke /dev -> aprovado
 Deploy /exec -> publicado
 Smoke /exec -> aprovado
 ```
 
-A suíte estável reúne verificações da arquitetura v1.2.2, da consulta de contas introduzida na v1.2.3 e da formatação de assinaturas introduzida na v1.2.4.
+A suíte consolidada cobre regressão do motor, dashboard, roteamento e leitura de faturas, itens de fatura, categorização de serviços e acabamento das respostas.
+
+Um erro HTTP 503 isolado da Gemini foi observado durante smoke e a mesma consulta funcionou na tentativa seguinte; a dependência externa permanece tratada como indisponibilidade transitória, não como inconsistência financeira.
 
 ---
 
@@ -349,7 +362,8 @@ Consulte [`docs/USAGE.md`](docs/USAGE.md) para exemplos de lançamentos, faturas
 | v1.2 | Auditoria, Dashboard v2, Insights, Alertas, Busca avançada e UX | ✅ Concluído |
 | v1.2.2 | Roteamento estruturado e contratos focados | ✅ Concluído |
 | v1.2.3 | Consulta determinística de contas ativas | ✅ Concluído |
-| v1.2.4 | Melhorias de apresentação e regressão consolidada | ✅ Stable |
+| v1.2.4 | Melhorias de apresentação e regressão consolidada | ✅ Concluído |
+| v1.2.5 | Dashboard redesign, ConsultaFaturas e refinamentos de categorização/UX | ✅ Stable |
 | v1.3 | Captura multimodal / novas integrações | 🧭 Planejado |
 | v2.0 | Multiusuário / Open Finance / nova camada de dados | 💡 Futuro |
 

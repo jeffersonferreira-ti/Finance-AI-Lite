@@ -1,4 +1,4 @@
-# Arquitetura — Finance AI Lite v1.2.4
+# Arquitetura — Finance AI Lite v1.2.5
 
 ## Princípio
 
@@ -54,6 +54,7 @@ O backend diferencia operações como:
 - consultas financeiras;
 - consultas de insights;
 - busca avançada;
+- consulta dedicada de faturas;
 - consulta livre;
 - relatórios.
 
@@ -81,8 +82,10 @@ A interface implementa:
 - histórico local;
 - confirmação/cancelamento;
 - cards estruturados de busca, ranking e comparação;
+- renderer dedicado para faturas e seus itens;
+- temas claro/escuro e layout responsivo;
 - tratamento de erros;
-- preservação de quebras de linha em respostas textuais.
+- preservação de quebras de linha e copy/paste em respostas textuais.
 
 ### Backend
 
@@ -161,6 +164,20 @@ Operações reversíveis podem ser desfeitas após revalidação do estado.
 
 Desde a v1.2.3, perguntas explícitas sobre contas ativas usam roteamento determinístico, reduzindo conflito semântico com assinaturas e outras entidades.
 
+### Consulta de faturas
+
+Na v1.2.5, consultas de fatura deixaram de depender da busca financeira genérica e passaram a usar uma operação dedicada.
+
+O fluxo identifica cartão, competência, tipo de consulta e status; o cálculo e a seleção são determinísticos sobre a aba `Faturas`.
+
+Quando o usuário solicita os itens, a competência e o cartão são resolvidos primeiro e então `Transacoes` é filtrada. A exibição preserva a data original da compra, inclusive em parcelas futuras.
+
+Os estados conversacionais principais são:
+
+- `Em aberto`;
+- `Paga`;
+- `Vencida`.
+
 ### Assinaturas
 
 Assinaturas são entidades próprias.
@@ -173,15 +190,20 @@ Na v1.2.4, a apresentação das assinaturas ativas foi refinada para uma entrada
 
 ## Dashboard
 
-O Dashboard v2 é calculado pelo Apps Script e suporta:
+Na v1.2.5, o Dashboard v2 recebeu um redesign mantendo os cálculos no Apps Script.
 
-- KPIs;
-- tendências;
-- comparações;
-- filtros;
-- histórico;
-- drill-down;
-- insights proativos.
+A interface suporta:
+
+- KPIs financeiros;
+- Receitas x Despesas;
+- distribuição por categoria;
+- contas, cartões, assinaturas e vencimentos;
+- tendências e comparações;
+- histórico de resultados;
+- metas e insights proativos;
+- filtros e drill-down;
+- temas claro/escuro;
+- layout responsivo.
 
 Dar F5 na planilha não substitui a atualização dos dados derivados. Alterações manuais relevantes devem ser seguidas por `Atualizar resumos financeiros`.
 
@@ -219,4 +241,4 @@ O fluxo recomendado é:
 Desenvolvimento → QA → testes → smoke → Stable → Stable CLEAN → principal → /dev → /exec
 ```
 
-A v1.2.4 Stable CLEAN foi validada com **58/58 verificações** e smoke tests no deployment publicado.
+A v1.2.5 Stable CLEAN foi validada com **133/133 verificações** e smoke tests na QA, na planilha principal, no `/dev` e no `/exec` publicado.

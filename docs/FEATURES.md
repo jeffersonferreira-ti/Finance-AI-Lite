@@ -1,4 +1,4 @@
-# Funcionalidades — Finance AI Lite v1.2.4
+# Funcionalidades — Finance AI Lite v1.2.5
 
 ## Movimentações e auditoria
 
@@ -47,7 +47,13 @@ Liste minhas contas bancárias.
 - pagamento parcial/integral;
 - saldo de fatura;
 - próximos vencimentos;
-- contratos específicos para pagamento de fatura.
+- contratos específicos para pagamento de fatura;
+- consulta dedicada por cartão e competência;
+- faturas abertas e próxima fatura;
+- estados Em aberto, Paga e Vencida;
+- listagem dos itens da fatura;
+- data original da compra preservada na exibição;
+- identificação de parcela atual/total.
 
 ## Transferências
 
@@ -92,12 +98,16 @@ Liste minhas contas bancárias.
 
 ## Dashboard v2
 
-- receitas, despesas e resultado;
-- taxa de poupança;
-- saldo total;
-- próxima fatura;
+- redesign responsivo;
+- temas claro e escuro;
+- receitas, despesas, resultado e taxa de poupança;
+- saldo total e próxima fatura;
+- Receitas x Despesas;
+- despesas por categoria;
+- contas, cartões, assinaturas e vencimentos;
 - comparação mensal;
-- histórico de seis meses;
+- histórico de resultados;
+- metas;
 - filtros por conta/cartão/categoria;
 - drill-down de transações;
 - insights proativos.
@@ -157,15 +167,19 @@ Liste minhas contas bancárias.
 - retry em falhas;
 - respostas narrativas;
 - resultados estruturados;
+- renderer dedicado para faturas;
+- status de fatura com destaque visual;
 - filtros/períodos visíveis;
 - estados vazios;
-- preservação de listas e quebras de linha em respostas textuais.
+- temas claro/escuro;
+- preservação de listas, quebras de linha e copy/paste em respostas textuais.
 
 ## Homologação atual
 
-A v1.2.4 Stable CLEAN foi validada com:
+A v1.2.5 Stable CLEAN foi validada com:
 
-- **58/58 verificações estáveis**;
-- smoke tests na principal;
+- **133/133 verificações estáveis**;
+- QA funcional;
+- validação na planilha principal;
 - smoke tests no `/dev`;
 - smoke tests no `/exec` publicado.

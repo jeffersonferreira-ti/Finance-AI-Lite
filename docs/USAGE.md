@@ -83,6 +83,32 @@ Se houver mais de uma competência possível:
 Paguei 480 da fatura do cartão X de setembro de 2026 pela Conta Principal.
 ```
 
+## Consulta de faturas
+
+A v1.2.5 possui uma rota dedicada para perguntas de fatura.
+
+Exemplos:
+
+```text
+Qual minha próxima fatura?
+```
+
+```text
+Quais faturas estão abertas?
+```
+
+```text
+Qual a fatura do cartão X de outubro de 2026?
+```
+
+```text
+Mostre os itens da fatura do cartão X deste mês.
+```
+
+A listagem de itens exibe a data original da compra. Em compras parceladas, a parcela aparece na competência correspondente sem perder essa data original.
+
+Os estados conversacionais principais são `Em aberto`, `Paga` e `Vencida`.
+
 ## Recorrências
 
 ```text
@@ -104,7 +130,7 @@ Quais assinaturas estão ativas?
 Quanto gasto por mês com assinaturas?
 ```
 
-Na v1.2.4, assinaturas ativas são apresentadas em lista, com uma entrada por linha e o total mensal equivalente separado.
+Assinaturas ativas são apresentadas em lista, com uma entrada por linha e o total mensal equivalente separado. Na v1.2.5, serviços conhecidos também podem atuar como fonte determinística de categoria para novos lançamentos.
 
 ## Metas
 
